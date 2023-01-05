@@ -25,7 +25,7 @@ Checking Identity : <identity1> <identity display name>
 There is no role assigned for identity: <identity1> <identity1 display name>
 
 Checking Identity : <identity2> <identity2 display name>
-All ACL permissions are matched for identity <identity2> <identity2 display name>
+All Access Policy permissions are matched for identity <identity2> <identity2 display name>
 
 Checking Identity : <identity3> <identity3 display name>
 Missing data action : microsoft.keyvault/vaults/keys/backup/action
