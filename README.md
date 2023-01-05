@@ -13,6 +13,9 @@ The tool intent is to provide sanity check when migrating existing Key Vault to 
 2. Execute script '.\CompareAccessPolicyToRBAC.ps1'
 3. Provide Key Vault Name for comparison
 
+> [!NOTE]
+> Switching from RBAC permission model is reversible action and in case of an issue, you can switch back to Access Policies at any time.
+
 Sample Result:
 ```
 COMPARISON REPORT
@@ -36,7 +39,7 @@ Missing data action : microsoft.keyvault/vaults/keys/purge/action
 ```
 
 # Suppport
-This project is monitored by Microsoft community members. For questions please create an issue in this project.
+This project is maintained by Microsoft community members. It is not supported by Microsoft Customer Support Services and normal service level agreements do not apply. For questions, issues with using this tool please create an issue in this project.
 
 ## Contributing
 
