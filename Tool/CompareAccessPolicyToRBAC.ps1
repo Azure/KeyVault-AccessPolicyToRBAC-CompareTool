@@ -9,8 +9,9 @@ $mappingTable = $null
 #Read Access Policy RBAC Mapping
 $mappingTable = Import-Csv -Path ./AcessPolicyRBACMapping.csv 
 
-If($mappingTable -eq $null){
- break
+If($mappingTable -eq $null)
+{
+    break
 }
 
 $keyVaultName = Read-Host -Prompt 'Input Key Vault name for comparison'
@@ -22,12 +23,11 @@ if($keyVault -eq $null)
     break
 }
 
-
-#Populate Access Policy Permission to RBAC Data Actions mapping and RBAC Data Actions collection
+# Populate Access Policy Permission to RBAC Data Actions mapping and RBAC Data Actions collection
 $APtoRBACMap=@{}
 $AllRBACDataActions=@{}
-foreach($r in $mappingTable){
-     
+foreach($r in $mappingTable)
+{
     $dataActionArray =($r.'RBAC Data Action'.ToLower()).Split(";")
     $dataActionHashTable = @{}
     foreach($dataAction in $dataActionArray)
@@ -35,15 +35,13 @@ foreach($r in $mappingTable){
         $dataActionHashTable.Item($dataAction)=""
         $AllRBACDataActions.Item($dataAction)=""
     }
-
     $APtoRBACMap.Item($r.'Access Policy Permission'.ToLower())=$dataActionHashTable
 }
+
 # Read AKV Access Policies and populate identity to permissions mapping
-
-
-
 $APPermissionsByIdentity = @{}
-foreach ($ap in $($keyVault.AccessPolicies)){
+foreach ($ap in $($keyVault.AccessPolicies))
+{
     foreach($keysPermission in $ap.PermissionsToKeys)
     {
         $APPermissionsByIdentity.Item($ap.ObjectId) += @{("key " + $keysPermission.ToLower())=""}
@@ -68,12 +66,11 @@ $APPermissionsByIdentity
 $RBACDataActionsByIdentity = @{}
 $roleAssignments = Get-AzRoleAssignment -Scope $keyVault.ResourceId
 
-foreach($ra in $roleAssignments){
-    
+foreach($ra in $roleAssignments)
+{
     $asignedDataActions = (Get-AzRoleDefinition -Id $ra.RoleDefinitionId).DataActions
     foreach($ada in $asignedDataActions)
     {
-        
         $ada = $ada.ToLower()
         #if all add all Key Vault RBAC data actions to per identity map
         if($ada -eq "*" -Or $ada -eq "microsoft.keyVault/*" -Or $ada  -eq "microsoft.keyVault/vaults/*")
@@ -106,19 +103,15 @@ foreach($ra in $roleAssignments){
                 }
            }  
         }
-        
     }
-    
 }
 
 Write-Output "`nKey Vault Role Assignments Data Actions`n"
-
 $RBACDataActionsByIdentity
-
 
 Write-Output "`nCOMPARISON REPORT`n"
 
-#Check if matches
+#Compare Access Policies to RBAC
 foreach($identity in $APPermissionsByIdentity.Keys)
 {
     $identityDisplayName = ($keyVault.AccessPolicies | Where-Object -Property ObjectId -eq "$identity").DisplayName
@@ -145,7 +138,4 @@ foreach($identity in $APPermissionsByIdentity.Keys)
     {
         Write-Output "All ACL permissions are matched for identity $identity $identityDisplayName"
     }
-   
-    
 }
-
