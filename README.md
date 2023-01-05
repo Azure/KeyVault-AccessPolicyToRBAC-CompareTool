@@ -1,14 +1,42 @@
-# Project
+# KeyVault-AccessPolicyToRBAC-CompareTool
 
-> This repo has been populated by an initial template to help get you started. Please
-> make sure to update the content to build a great experience for community-building.
+PowerShell tool to compare Key Vault access policies to assigned RBAC roles to help with Access Policy to RBAC Permission Model migration.
+The tool intent is to provide sanity check when migrating existing Key Vault to RBAC permission model to ensure that assigned roles with underlying data actions cover existing Access Policies.
 
-As the maintainer of this project, please make a few updates:
+# Usage Instruction
 
-- Improving this README.MD file to provide a great experience
-- Updating SUPPORT.MD with content about this project's support experience
-- Understanding the security reporting process in SECURITY.MD
-- Remove this section from the README
+## Prerequisites
+- Download project files to your enviroment ('AccessPolicyRBACMapping.csv', 'CompareAccessPolicyToRBAC.ps1')
+- Use Windows PowerShell or Cloud Shell
+
+1. Connect to Azure: 'Connect-AzAccount'
+2. Execute script '.\CompareAccessPolicyToRBAC.ps1'
+3. Provide Key Vault Name for comparison
+
+Sample Result:
+```
+COMPARISON REPORT
+
+
+Checking Identity : <identity1> <identity display name>
+There is no role assigned for identity: <identity1> <identity1 display name>
+
+Checking Identity : <identity2> <identity2 display name>
+All ACL permissions are matched for identity <identity2> <identity2 display name>
+
+Checking Identity : <identity3> <identity3 display name>
+Missing data action : microsoft.keyvault/vaults/keys/backup/action
+Missing data action : microsoft.keyvault/vaults/keys/recover/action
+Missing data action : microsoft.keyvault/vaults/keys/create/action
+Missing data action : microsoft.keyvault/vaults/keys/restore/action
+Missing data action : microsoft.keyvault/vaults/keys/delete
+Missing data action : microsoft.keyvault/vaults/keys/update/action
+Missing data action : microsoft.keyvault/vaults/keys/import/action
+Missing data action : microsoft.keyvault/vaults/keys/purge/action
+```
+
+# Suppport
+This project is monitored by Microsoft community members. For questions please create an issue in this project.
 
 ## Contributing
 
