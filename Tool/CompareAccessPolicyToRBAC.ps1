@@ -98,7 +98,7 @@ foreach($ra in $roleAssignments)
            else
            {
                 #check if an item is already added
-                if($RBACDataActionsByIdentity.Item($ra.ObjectId) -eq $null -Or -Not $RBACDataActionsByIdentity.Item($ra.ObjectId).ContainsKey($da)){
+                if($RBACDataActionsByIdentity.Item($ra.ObjectId) -eq $null -Or -Not $RBACDataActionsByIdentity.Item($ra.ObjectId).ContainsKey($ada)){
                     $RBACDataActionsByIdentity.Item($ra.ObjectId) += @{$ada=""}
                 }
            }  
