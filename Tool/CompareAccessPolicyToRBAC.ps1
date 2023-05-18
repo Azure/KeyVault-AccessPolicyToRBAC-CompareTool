@@ -44,18 +44,26 @@ foreach ($ap in $($keyVault.AccessPolicies))
 {
     foreach($keysPermission in $ap.PermissionsToKeys)
     {
-        $APPermissionsByIdentity.Item($ap.ObjectId) += @{("key " + $keysPermission.ToLower())=""}
+        if ($null -eq $APPermissionsByIdentity.Item($ap.ObjectId) -or -not $APPermissionsByIdentity.Item($ap.ObjectId).ContainsKey("key " + $keysPermission.ToLower())) {
+            $APPermissionsByIdentity.Item($ap.ObjectId) += @{("key " + $keysPermission.ToLower())=""}
+        }
     }
     foreach($keysPermission in $ap.PermissionsToCertificates)
     {
-        $APPermissionsByIdentity.Item($ap.ObjectId) += @{("certificate " + $keysPermission.ToLower())=""}
+        if ($null -eq $APPermissionsByIdentity.Item($ap.ObjectId) -or -not $APPermissionsByIdentity.Item($ap.ObjectId).ContainsKey("certificate " + $keysPermission.ToLower())) {
+            $APPermissionsByIdentity.Item($ap.ObjectId) += @{("certificate " + $keysPermission.ToLower())=""}
+        }
     }
     foreach($keysPermission in $ap.PermissionsToSecrets)
     {
-        $APPermissionsByIdentity.Item($ap.ObjectId) += @{("secret " + $keysPermission.ToLower())=""}
+        if ($null -eq $APPermissionsByIdentity.Item($ap.ObjectId) -or -not $APPermissionsByIdentity.Item($ap.ObjectId).ContainsKey("secret " + $keysPermission.ToLower())) {
+            $APPermissionsByIdentity.Item($ap.ObjectId) += @{("secret " + $keysPermission.ToLower())=""}
+        }
     }foreach($keysPermission in $ap.PermissionsToStorage)
     {
-        $APPermissionsByIdentity.Item($ap.ObjectId) += @{("storage " + $keysPermission.ToLower())=""}
+        if ($null -eq $APPermissionsByIdentity.Item($ap.ObjectId) -or -not $APPermissionsByIdentity.Item($ap.ObjectId).ContainsKey("storage " + $keysPermission.ToLower())) {
+            $APPermissionsByIdentity.Item($ap.ObjectId) += @{("storage " + $keysPermission.ToLower())=""}
+        }
     }
 }
 
@@ -75,7 +83,20 @@ foreach($ra in $roleAssignments)
         #if all add all Key Vault RBAC data actions to per identity map
         if($ada -eq "*" -Or $ada -eq "microsoft.keyVault/*" -Or $ada  -eq "microsoft.keyVault/vaults/*")
         {
-            $RBACDataActionsByIdentity.Item($ra.ObjectId) += $AllRBACDataActions
+            $raObjectId = $ra.ObjectId
+            $existingActions = $RBACDataActionsByIdentity.Item($raObjectId)
+
+            if ($null -eq $existingActions) {
+                $existingActions = @{}
+            }
+
+            foreach ($action in $AllRBACDataActions) {
+                if (-not $existingActions.ContainsKey($action)) {
+                    $existingActions.Add($action, $null)
+                }
+            }
+
+            $RBACDataActionsByIdentity.Item($raObjectId) = $existingActions
         }
         #otherwise add if it is Key Vault data action 
         elseif($ada.StartsWith("microsoft.keyvault"))
@@ -89,8 +110,8 @@ foreach($ra in $roleAssignments)
                     if($da -match $pattern)
                     {   
                         #check if an item is already added 
-                        if($RBACDataActionsByIdentity.Item($ra.ObjectId) -eq $null -Or -Not $RBACDataActionsByIdentity.Item($ra.ObjectId).ContainsKey($da)){
-                            $RBACDataActionsByIdentity.Item($ra.ObjectId) += @{$da=""}
+                        if($null -eq $RBACDataActionsByIdentity.Item($ra.ObjectId) -Or -Not $RBACDataActionsByIdentity.Item($ra.ObjectId).ContainsKey($da)){
+                        $RBACDataActionsByIdentity.Item($ra.ObjectId) += @{$da=""}
                         }
                     }
                 }
@@ -98,7 +119,7 @@ foreach($ra in $roleAssignments)
            else
            {
                 #check if an item is already added
-                if($RBACDataActionsByIdentity.Item($ra.ObjectId) -eq $null -Or -Not $RBACDataActionsByIdentity.Item($ra.ObjectId).ContainsKey($da)){
+                if($null -eq $RBACDataActionsByIdentity.Item($ra.ObjectId) -Or -Not $RBACDataActionsByIdentity.Item($ra.ObjectId).ContainsKey($ada)){
                     $RBACDataActionsByIdentity.Item($ra.ObjectId) += @{$ada=""}
                 }
            }  
