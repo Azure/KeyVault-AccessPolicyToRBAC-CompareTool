@@ -42,20 +42,29 @@ foreach($r in $mappingTable)
 $APPermissionsByIdentity = @{}
 foreach ($ap in $($keyVault.AccessPolicies))
 {
-    foreach($keysPermission in $ap.PermissionsToKeys)
+   foreach($keysPermission in $ap.PermissionsToKeys)
     {
-        $APPermissionsByIdentity.Item($ap.ObjectId) += @{("key " + $keysPermission.ToLower())=""}
+        if ($null -eq $APPermissionsByIdentity.Item($ap.ObjectId) -or -not $APPermissionsByIdentity.Item($ap.ObjectId).ContainsKey("key " + $keysPermission.ToLower())) {
+            $APPermissionsByIdentity.Item($ap.ObjectId) += @{("key " + $keysPermission.ToLower())=""}
+        }
     }
     foreach($keysPermission in $ap.PermissionsToCertificates)
     {
-        $APPermissionsByIdentity.Item($ap.ObjectId) += @{("certificate " + $keysPermission.ToLower())=""}
+        if ($null -eq $APPermissionsByIdentity.Item($ap.ObjectId) -or -not $APPermissionsByIdentity.Item($ap.ObjectId).ContainsKey("certificate " + $keysPermission.ToLower())) {
+            $APPermissionsByIdentity.Item($ap.ObjectId) += @{("certificate " + $keysPermission.ToLower())=""}
+        }
     }
     foreach($keysPermission in $ap.PermissionsToSecrets)
     {
-        $APPermissionsByIdentity.Item($ap.ObjectId) += @{("secret " + $keysPermission.ToLower())=""}
-    }foreach($keysPermission in $ap.PermissionsToStorage)
+        if ($null -eq $APPermissionsByIdentity.Item($ap.ObjectId) -or -not $APPermissionsByIdentity.Item($ap.ObjectId).ContainsKey("secret " + $keysPermission.ToLower())) {
+            $APPermissionsByIdentity.Item($ap.ObjectId) += @{("secret " + $keysPermission.ToLower())=""}
+        }
+    }
+    foreach($keysPermission in $ap.PermissionsToStorage)
     {
-        $APPermissionsByIdentity.Item($ap.ObjectId) += @{("storage " + $keysPermission.ToLower())=""}
+        if ($null -eq $APPermissionsByIdentity.Item($ap.ObjectId) -or -not $APPermissionsByIdentity.Item($ap.ObjectId).ContainsKey("storage " + $keysPermission.ToLower())) {
+            $APPermissionsByIdentity.Item($ap.ObjectId) += @{("storage " + $keysPermission.ToLower())=""}
+        }
     }
 }
 
