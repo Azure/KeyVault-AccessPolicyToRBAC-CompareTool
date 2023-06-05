@@ -75,6 +75,7 @@ foreach($ra in $roleAssignments)
         #if all add all Key Vault RBAC data actions to per identity map
         if($ada -eq "*" -Or $ada -eq "microsoft.keyVault/*" -Or $ada  -eq "microsoft.keyVault/vaults/*")
         {
+            $RBACDataActionsByIdentity.Item($ra.ObjectId) = @{}
             $RBACDataActionsByIdentity.Item($ra.ObjectId) += $AllRBACDataActions
         }
         #otherwise add if it is Key Vault data action 
